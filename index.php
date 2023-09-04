@@ -1,3 +1,3 @@
 <?php
 
-echo "Hello World!";
+echo "Hello World! This is the beginning of the GoToGro-MRM Software Project.";
