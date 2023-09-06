@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Members</title>
+</head>
+<body>
+    <h1>Add Member Details</h1>
+    
+    <?php
+    //create variables for members
+    $firstName = $lastName = $mobileNumber = $address = "";
+	//on the html page     <!-- link this php page --> <a href="add_member.php">Add Member Details</a>
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        //read the data input
+        $firstName = cleanInput($_POST["first_name"]);
+        $lastName = cleanInput($_POST["last_name"]);
+        $mobileNumber = cleanInput($_POST["mobile_number"]);
+        $address = cleanInput($_POST["address"]);
+
+        //assuming mobile number must be 10 digits
+        if (preg_match("/^[0-9]{10}$/", $mobileNumber)) {
+            //display the user details
+            echo "<p>First Name: $firstName</p>";
+            echo "<p>Last Name: $lastName</p>";
+            echo "<p>Mobile Number: $mobileNumber</p>";
+            echo "<p>Address: $address</p>";
+        } else {
+            echo "<p class='error'>Please enter a valid 10-digit mobile number.</p>";
+        }
+    }
+
+
+    function cleanInput($data) {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+    ?>
+    
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+        
+        <label for="first_name">First Name:</label>
+        <input type="text" id="first_name" name="first_name" required><br><br>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" id="last_name" name="last_name" required><br><br>
+
+        <label for="mobile_number">Mobile Number (10 digits):</label>
+        <input type="text" id="mobile_number" name="mobile_number" pattern="[0-9]{10}" required><br><br>
+
+        <label for="address">Address:</label>
+        <textarea id="address" name="address" rows="4" required></textarea><br><br>
+
+        <input type="submit" value="Add Member">
+    </form>
+</body>
+</html>
