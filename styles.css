@@ -1,0 +1,60 @@
+/* styles.css */
+
+/* Reset some default browser styles */
+body, h1, h2, ul, li, p {
+    margin: 0;
+    padding: 0;
+}
+
+/* Apply a background color and set text color */
+body {
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+/* Style the header */
+header {
+    background-color: #007bff;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Style the navigation menu */
+nav ul {
+    list-style-type: none;
+    text-align: center;
+    padding: 20px;
+}
+
+nav li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #0056b3;
+}
+
+/* Style the footer */
+footer {
+    text-align: center;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Center the entire page */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
