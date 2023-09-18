@@ -8,7 +8,7 @@
 <body>
 
 <?php
-// Assuming you have a database connection established
+//need database sql query here
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["member_id"])) {
     $member_id = $_GET["member_id"];

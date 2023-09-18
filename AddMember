@@ -16,7 +16,7 @@
         $lastName = cleanInput($_POST["last_name"]);
         $mobileNumber = cleanInput($_POST["mobile_number"]);
         $address = cleanInput($_POST["address"]);
-
+        $email = cleanInput($_POST["email"]);
         //assuming mobile number must be 10 digits
         if (preg_match("/^[0-9]{10}$/", $mobileNumber)) {
             //display the user details
@@ -24,6 +24,7 @@
             echo "<p>Last Name: $lastName</p>";
             echo "<p>Mobile Number: $mobileNumber</p>";
             echo "<p>Address: $address</p>";
+            echo "<p>Email: $email</p>";
         } else {
             echo "<p class='error'>Please enter a valid 10-digit mobile number.</p>";
         }
@@ -51,6 +52,9 @@
 
         <label for="address">Address:</label>
         <textarea id="address" name="address" rows="4" required></textarea><br><br>
+
+        <label for="email">Email:</label>
+        <textarea id="email" name="email" rows="1" required></textarea><br><br>
 
         <input type="submit" value="Add Member">
     </form>

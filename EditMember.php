@@ -8,7 +8,7 @@
 <body>
 
 <?php
-// Assuming you have a database connection established
+// need databse sql here
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["member_id"])) {
     $member_id = $_GET["member_id"];
@@ -18,9 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["member_id"])) {
 
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
-        $name = $row["name"];
+        $firstName = $row["first_name"];
+        $lastName = $row["last_name"];
+        $mobileNumber = $row["mobile_number"];
+        $address = $row["address"];
         $email = $row["email"];
-        $phone = $row["phone"];
     } else {
         echo "Member not found.";
     }
@@ -28,11 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET["member_id"])) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $member_id = $_POST["member_id"];
-    $name = $_POST["name"];
+    $firstName = $_POST["first_name"];
+    $lastName = $_POST["last_name"];
+    $mobileNumber = $_POST["mobile_number"];
+    $address = $_POST["address"];
     $email = $_POST["email"];
-    $phone = $_POST["phone"];
 
-    $sql = "UPDATE members SET name='$name', email='$email', phone='$phone' WHERE id = $member_id";
+
+    $sql = "UPDATE members SET first_name='$firstName', last_name='$lastName', email='$email', mobile_Number='$mobileNumber', address='address' WHERE id = $member_id";
 
     if ($conn->query($sql) === TRUE) {
         echo "Member details updated successfully.";
@@ -44,9 +49,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <form method="post" action="<?php echo $_SERVER['PHP_SELF']; ?>">
     <input type="hidden" name="member_id" value="<?php echo $member_id; ?>">
-    Name: <input type="text" name="name" value="<?php echo $name; ?>"><br>
+    FirstName: <input type="text" name="first_name" value="<?php echo $lastName; ?>"><br>
+    LastName: <input type="text" name="last_name" value="<?php echo $firstName; ?>"><br>
     Email: <input type="text" name="email" value="<?php echo $email; ?>"><br>
-    Phone: <input type="text" name="phone" value="<?php echo $phone; ?>"><br>
+    Mobile: <input type="number" name="mobile_number" value="<?php echo $mobileNumber; ?>"><br>
+    Address: <input type="text" name = "address" value ="<?php echo $address; ?>"><br>
     <input type="submit" value="Update Details">
 </form>
 
