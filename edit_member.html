@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Member Details</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <h1>Edit Member Details</h1>
+    <form action="edit_member.php" method="POST">
+        
+        <label for="member_id">Member ID:</label>
+        <input type="text" name="member_id" id="member_id" required><br>
+
+        <label for="first_name">First Name:</label>
+        <input type="text" name="first_name" id="first_name" required><br>
+
+        <label for="last_name">Last Name:</label>
+        <input type="text" name="last_name" id="last_name" required><br>
+
+        <label for="email">Email:</label>
+        <input type="email" name="email" id="email" required><br>
+
+        <label for="address">Address:</label>
+        <input type="text" name="address" id="address" required><br>
+
+        <label for="mobile_number">Mobile Number:</label>
+        <input type="tel" name="mobile_number" id="mobile_number" required><br>
+
+        <label for="user_id">User ID:</label>
+        <input type="text" name="user_id" id="user_id" required><br>
+
+        <label for="is_staff">Staff:</label>
+        <input type="checkbox" name="is_staff" id="is_staff"><br>
+
+        <input type="submit" value="Update Member">
+    </form>
+</body>
+</html>
