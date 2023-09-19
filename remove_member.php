@@ -4,7 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $member_id = $_POST["member_id"];
 
     // Database connection details
-    $db_host = "gotopro-mrm-db.mysql.database.azure.com";
+    $db_host = "gotogro-mrm-db.mysql.database.azure.com";
     $db_username = "mydemouser";
     $db_password = "Vsp3dbwH";
     $db_name = "mysql_schema";
