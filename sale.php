@@ -41,6 +41,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
+	
+	// Query to retrieve sales records
+    $sql = "SELECT * FROM sales";
+
+    // Execute the query
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        // Display table header
+        echo "<table border='1'>";
+        echo "<tr><th>Transaction ID</th><th>Product Name</th><th>Quantity</th><th>Price</th></tr>";
+
+        // Output data of each row
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr><td>" . $row["transaction_id"] . "</td><td>" . $row["product_name"] . "</td><td>" . $row["quantity"] . "</td><td>" . $row["price"] . "</td></tr>";
+        }
+
+        echo "</table>";
+    } else {
+        echo "No sales records found.";
+    }
 
     // Close the database connection
     $conn->close();
