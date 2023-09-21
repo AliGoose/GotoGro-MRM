@@ -7,24 +7,10 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>Welcome to Goto-Gro MRM</h1>
-    </header>
+    <?php include 'header.php'; ?>
 
-    <nav>
-        <ul>
-            <li><a href="add_member.php">Add Member</a></li>
-            <li><a href="edit_member.php">Edit Member Details</a></li>
-            <li><a href="remove_member.php">Remove Member</a></li>
-            <li><a href="add_sales.php">Add Sales</a></li>
-            <li><a href="edit_sales.php">Edit Sales</a></li>
-            <li><a href="export_data.php">Export Sales/Members Data</a></li>
-            <li><a href="inventory.php">Inventory</a></li>
-        </ul>
-    </nav>
+    <?php include 'menu.php'; ?>
 
-    <footer>
-        <p>&copy; <?php echo date("Y"); ?> Goto-Gro MRM</p>
-    </footer>
+    <?php include 'footer.php'; ?>
 </body>
 </html>
