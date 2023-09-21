@@ -20,14 +20,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         die("Connection failed: " . $conn->connect_error);
     }
 
-    // Configure SSL options
-    $conn->ssl_set(
-        'path/to/client-key.pem', // Path to your client key file
-        'path/to/client-cert.pem', // Path to your client certificate file
-        'path/to/ca-cert.pem', // Path to your CA certificate file
-        null, // Path to your server certificate file (if needed)
-        null
-    );
+    // Configure SSL options with the certificate file in the same directory
+	$conn->ssl_set(
+    __DIR__ . '/DigiCertGlobalRootCA.crt.pem', // Path to your CA certificate file
+    null, // Path to your client key file (if needed)
+    null, // Path to your client certificate file (if needed)
+    null  // Path to your server certificate file (if needed)
+	);	
 
     // Establish the connection using SSL
     if (!$conn->real_connect($db_host, $db_username, $db_password, $db_name)) {
