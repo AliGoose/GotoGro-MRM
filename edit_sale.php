@@ -7,10 +7,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_price = $_POST["price"];
 
     // Replace this with your database connection and query
+<<<<<<< Updated upstream
     $db_host = "your_db_host";
     $db_username = "your_db_username";
     $db_password = "your_db_password";
     $db_name = "your_db_name";
+=======
+    $db_host = "gotogro-mrm-db.mysql.database.azure.com";
+    $db_username = "mydemouser";
+    $db_password = "Vsp3dbwH";
+    $db_name = "mysql_schema";
+>>>>>>> Stashed changes
 
     // Create a database connection
     $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
