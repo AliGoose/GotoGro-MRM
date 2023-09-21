@@ -76,6 +76,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Add Sales Record</title>
 </head>
 <body>
+	<?php
+    include 'header.php';
+    include 'menu.php';
+    ?>
     <h1>Add Sales Record</h1>
     <form action="sale.php" method="POST">
         <label for="transaction_id">Transaction ID:</label>
@@ -98,5 +102,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             return 'TX' + Math.floor(Math.random() * 1000000);
         }
     </script>
+	<?php
+    include 'footer.php';
+    ?>
 </body>
 </html>
