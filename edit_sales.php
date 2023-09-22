@@ -11,9 +11,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $db_username = "mydemouser";
     $db_password = "Vsp3dbwH";
     $db_name = "mysql_schema";
+	$certificate = 'cert/DigiCertGlobalRootCA.crt.pem';
 
     // Create a database connection
-    $conn = new mysqli($db_host, $db_username, $db_password, $db_name);
+    $conn = new mysqli($db_host, $db_username, $db_password, $db_name3306, MYSQLI_CLIENT_SSL);
 
     // Check for connection errors
     if ($conn->connect_error) {
@@ -21,12 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Configure SSL options with the certificate file in the same directory
-	$conn->ssl_set(
-    __DIR__ . '/DigiCertGlobalRootCA.crt.pem', // Path to your CA certificate file
-    null, // Path to your client key file (if needed)
-    null, // Path to your client certificate file (if needed)
-    null  // Path to your server certificate file (if needed)
-	);	
+	$mysqli->ssl_set(
+        $certificate,
+        null,
+        null,
+        null,
+        null
+    );
 
     // Establish the connection using SSL
     if (!$conn->real_connect($db_host, $db_username, $db_password, $db_name)) {
