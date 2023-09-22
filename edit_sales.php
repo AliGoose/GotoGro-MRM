@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	$certificate = 'cert/DigiCertGlobalRootCA.crt.pem';
 
     // Create a database connection
-    $conn = new mysqli($db_host, $db_username, $db_password, $db_name3306, MYSQLI_CLIENT_SSL);
+    $conn = new mysqli($db_host, $db_username, $db_password, $db_name, 3306, MYSQLI_CLIENT_SSL);
 
     // Check for connection errors
     if ($conn->connect_error) {
