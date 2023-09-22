@@ -30,22 +30,21 @@
         $password = "Vsp3dbwH";
         $database = "mysql_schema";
 
-        // Create a connection object with SSL options
-        $mysqli = new mysqli($servername, $username, $password, $database, 3306, null, MYSQLI_CLIENT_SSL);
-
-        // Check for connection errors
+        $certificate = 'cert/DigiCertGlobalRootCA.crt.pem';
+        $mysqli = new mysqli($servername, $username, $password, $database, 3306, MYSQLI_CLIENT_SSL);
+    
         if ($mysqli->connect_error) {
             die("Connection failed: " . $mysqli->connect_error);
         }
-
-        // Configure SSL options
+    
         $mysqli->ssl_set(
-            'https://github.com/AliGoose/GotoGro-MRM/blob/main/DigiCertGlobalRootCA.crt.pem',
+            $certificate,
             null,
             null,
             null,
             null
         );
+    
 
         // Establish the connection using SSL
         if (!$mysqli->real_connect($servername, $username, $password, $database)) {
@@ -99,14 +98,15 @@
     $password = "Vsp3dbwH";
     $database = "mysql_schema";
 
-    $mysqli = new mysqli($servername, $username, $password, $database, 3306, null, MYSQLI_CLIENT_SSL);
+    $certificate = 'cert/DigiCertGlobalRootCA.crt.pem';
+    $mysqli = new mysqli($servername, $username, $password, $database, 3306, MYSQLI_CLIENT_SSL);
 
     if ($mysqli->connect_error) {
         die("Connection failed: " . $mysqli->connect_error);
     }
 
     $mysqli->ssl_set(
-        'https://github.com/AliGoose/GotoGro-MRM/blob/main/DigiCertGlobalRootCA.crt.pem',
+        $certificate,
         null,
         null,
         null,
