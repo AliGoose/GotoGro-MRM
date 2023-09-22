@@ -79,6 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="description" content="add_sales_record">
     <title>Add Sales Record</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
 	<?php include 'header.php'; ?>
