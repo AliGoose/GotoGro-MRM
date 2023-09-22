@@ -86,10 +86,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Edit Sales Record</title>
 </head>
 <body>
-	<?php
-    include 'header.php';
-    include 'menu.php';
-    ?>
+	<?php include 'header.php'; ?>
+	<?php include 'menu.php';   ?>
     <h1>Edit Sales Record</h1>
     <form action="edit_sale.php" method="POST">
         <label for="transaction_id">Transaction ID:</label>
