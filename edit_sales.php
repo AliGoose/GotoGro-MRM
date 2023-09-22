@@ -90,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 	<?php include 'header.php'; ?>
 	<?php include 'menu.php';   ?>
     <h1>Edit Sales Record</h1>
-    <form action="edit_sale.php" method="POST">
+    <form action="" method="POST">
         <label for="transaction_id">Transaction ID:</label>
         <input type="text" name="transaction_id" id="transaction_id" required>
         <br>
