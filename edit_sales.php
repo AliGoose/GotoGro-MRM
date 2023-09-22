@@ -84,6 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="description" content="edit_sales_record">
     <title>Edit Sales Record</title>
+	<link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
 	<?php include 'header.php'; ?>
