@@ -1,137 +1,133 @@
+<?php
+// SSL/TLS configuration
+$mysqli = new mysqli();
+mysqli_ssl_set($mysqli, NULL, NULL, "cert.pem", NULL, NULL);
+
+// Database configuration
+$host = "gotogro-mrm-db.mysql.database.azure.com";
+$username = "mydemouser";
+$password = "Vsp3dbwH";
+$database = "mysql_schema";
+$port = 3306;
+
+// Create a database connection with SSL/TLS
+if (!$mysqli->real_connect($host, $username, $password, $database, $port, NULL, MYSQLI_CLIENT_SSL)) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
+
+// Check the connection
+if ($mysqli->connect_error) {
+    die("Connection failed: " . $mysqli->connect_error);
+}
+
+// Process the form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $staffType = $_POST["staffType"];
+    $username = $_POST["username"];
+    $surname = $_POST["surname"];
+    $givenName = $_POST["givenName"];
+    $pwdHash = $_POST["pwdHash"];
+    $userEmail = $_POST["userEmail"];
+
+    // SQL query to insert member data into the "people" table
+    $sql = "INSERT INTO people (staffType, username, surname, givenName, pwdHash, userEmail) VALUES (?, ?, ?, ?, ?, ?)";
+    $stmt = $mysqli->prepare($sql);
+
+    // Bind parameters
+    $stmt->bind_param("isssss", $staffType, $username, $surname, $givenName, $pwdHash, $userEmail);
+
+    // Execute the query
+    if ($stmt->execute()) {
+        // Insertion successful
+        echo "Member added successfully!";
+    } else {
+        // Insertion failed
+        echo "Error: " . $mysqli->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+}
+
+// Close the database connection
+$mysqli->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Member Details</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <title>Add New Member</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <?php
-    include 'header.php';
-    include 'menu.php';
-    ?>
-
-    <h1>Add Member Details</h1>
-
-    <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Retrieve data from the form
-        $first_name = $_POST["first_name"];
-        $last_name = $_POST["last_name"];
-        $email = $_POST["email"];
-        $address = $_POST["address"];
-        $mobile_number = $_POST["mobile_number"];
-        $user_id = $_POST["user_id"];
-        $is_staff = isset($_POST["is_staff"]) ? 1 : 0; // Checkbox handling
-
-        $servername = "gotogro-mrm-db.mysql.database.azure.com";
-        $username = "mydemouser";
-        $password = "Vsp3dbwH";
-        $database = "mysql_schema";
-
-        $certificate = 'cert/DigiCertGlobalRootCA.crt.pem';
-        $mysqli = new mysqli($servername, $username, $password, $database, 3306, MYSQLI_CLIENT_SSL);
-    
-        if ($mysqli->connect_error) {
-            die("Connection failed: " . $mysqli->connect_error);
-        }
-    
-        $mysqli->ssl_set(
-            $certificate,
-            null,
-            null,
-            null,
-            null
-        );
-    
-
-        // Establish the connection using SSL
-        if (!$mysqli->real_connect($servername, $username, $password, $database)) {
-            die("Connection failed: " . $mysqli->connect_error);
-        }
-
-        // Insert the member details into the database
-        $sql = "INSERT INTO members (first_name, last_name, email, address, mobile_number, user_id, is_staff) 
-                VALUES ('$first_name', '$last_name', '$email', '$address', '$mobile_number', '$user_id', $is_staff)";
-
-        if ($mysqli->query($sql) === TRUE) {
-            echo "Member details added successfully!";
-        } else {
-            echo "Error: " . $sql . "<br>" . $mysqli->error;
-        }
-
-        // Close the connection
-        $mysqli->close();
-    }
-    ?>
-
-    <form action="" method="POST">
-        <label for="first_name">First Name:</label>
-        <input type="text" name="first_name" id="first_name" required><br>
-
-        <label for="last_name">Last Name:</label>
-        <input type="text" name="last_name" id="last_name" required><br>
-
-        <label for="email">Email:</label>
-        <input type="email" name="email" id="email" required><br>
-
-        <label for="address">Address:</label>
-        <input type="text" name="address" id="address" required><br>
-
-        <label for="mobile_number">Mobile Number:</label>
-        <input type="tel" name="mobile_number" id="mobile_number" required><br>
-
-        <label for="user_id">User ID:</label>
-        <input type="text" name="user_id" id="user_id" required><br>
-
-        <label for="is_staff">Staff:</label>
-        <input type="checkbox" name="is_staff" id="is_staff"><br>
-
-        <input type="submit" value="Add Member">
-    </form>
-
-    <?php
-    // Retrieve and display member details
-    $servername = "gotogro-mrm-db.mysql.database.azure.com";
-    $username = "mydemouser";
-    $password = "Vsp3dbwH";
-    $database = "mysql_schema";
-
-    $certificate = 'cert/DigiCertGlobalRootCA.crt.pem';
-    $mysqli = new mysqli($servername, $username, $password, $database, 3306, MYSQLI_CLIENT_SSL);
-
-    if ($mysqli->connect_error) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-
-    $mysqli->ssl_set(
-        $certificate,
-        null,
-        null,
-        null,
-        null
-    );
-
-    if (!$mysqli->real_connect($servername, $username, $password, $database)) {
-        die("Connection failed: " . $mysqli->connect_error);
-    }
-
-    $result = $mysqli->query("SELECT * FROM members");
-
-    if ($result->num_rows > 0) {
-        echo "<h2>Member Details:</h2><ul>";
-        while($row = $result->fetch_assoc()) {
-            echo "<li>" . $row["first_name"] . " " . $row["last_name"] . " - Email: " . $row["email"] . "</li>";
-        }
-        echo "</ul>";
-    } else {
-        echo "No members found.";
-    }
-
-    $mysqli->close();
-    ?>
-
-    <?php include 'footer.php'; ?>
+    <div class="container">
+        <h2>Add New Member</h2>
+        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
+            <label for="staffType">Staff Type:</label>
+            <input type="text" id="staffType" name="staffType" required>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="surname">Surname:</label>
+            <input type="text" id="surname" name="surname" required>
+            <label for="givenName">Given Name:</label>
+            <input type="text" id="givenName" name="givenName" required>
+            <label for="pwdHash">Password Hash:</label>
+            <input type="text" id="pwdHash" name="pwdHash" required>
+            <label for="userEmail">User Email:</label>
+            <input type="text" id="userEmail" name="userEmail" required>
+            <input type="submit" value="Add Member">
+        </form>
+    </div>
 </body>
 </html>
