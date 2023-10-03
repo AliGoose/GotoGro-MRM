@@ -1,4 +1,6 @@
 <?php 
+// FOR EVERY DATABASE TRANSACTION, ADD AN IMPORT LINE POINTING TO THIS
+// REMEMBER TO $socket->close AFTER OPERATION 
 $serverURL = "gotogro-mrm-db.mysql.database.azure.com";
 $username = "mydemouser";
 $password = "Vsp3dbwH";
