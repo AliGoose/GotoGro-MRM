@@ -29,41 +29,66 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pwdHash = $_POST["pwdHash"];
     $userEmail = $_POST["userEmail"];
 
-    // SQL query to insert member data into the "people" table
-    $sql = "INSERT INTO people (staffType, username, surname, givenName, pwdHash, userEmail) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $mysqli->prepare($sql);
+    // Check if the username already exists in the database
+    $checkQuery = "SELECT COUNT(*) as count FROM people WHERE username = ?";
+    $checkStmt = $mysqli->prepare($checkQuery);
+    $checkStmt->bind_param("s", $username);
+    $checkStmt->execute();
+    $checkResult = $checkStmt->get_result();
+    $row = $checkResult->fetch_assoc();
+    $existingUsernameCount = $row["count"];
+    $checkStmt->close();
 
-    // Bind parameters
-    $stmt->bind_param("isssss", $staffType, $username, $surname, $givenName, $pwdHash, $userEmail);
-
-    // Execute the query
-    if ($stmt->execute()) {
-        // Insertion successful
-        echo "Member added successfully!";
+    if ($existingUsernameCount > 0) {
+        echo "Username already exists. Please choose a different username.";
     } else {
-        // Insertion failed
-        echo "Error: " . $mysqli->error;
-    }
+        // Validate staff type (only accept specific staff types)
+        $validStaffTypes = [1, 2]; // Add the valid staff types here
+        if (!in_array($staffType, $validStaffTypes)) {
+            die("Invalid staff type.");
+        }
 
-    // Close the statement
-    $stmt->close();
+        // Validate email format
+        if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
+            die("Invalid email format.");
+        }
+
+        // SQL query to insert member data into the "people" table
+        $insertQuery = "INSERT INTO people (staffType, username, surname, givenName, pwdHash, userEmail) VALUES (?, ?, ?, ?, ?, ?)";
+        $insertStmt = $mysqli->prepare($insertQuery);
+
+        // Bind parameters
+        $insertStmt->bind_param("isssss", $staffType, $username, $surname, $givenName, $pwdHash, $userEmail);
+
+        // Execute the query
+        if ($insertStmt->execute()) {
+            // Insertion successful
+            echo "Member added successfully!";
+        } else {
+            // Insertion failed
+            echo "Error: " . $mysqli->error;
+        }
+
+        // Close the statement
+        $insertStmt->close();
+    }
 }
 
 // Close the database connection
 $mysqli->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add New Member</title>
     <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to external CSS file -->
 </head>
+</head>
 <body>
 <?php include 'header.php'; ?>
-    <?php include 'menu.php'; ?>
+<?php include 'menu.php'; ?>
     <div class="container">
         <h2>Add New Member</h2>
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
