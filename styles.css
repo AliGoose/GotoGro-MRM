@@ -1,60 +1,61 @@
 /* styles.css */
 
-/* Reset some default browser styles */
-body, h1, h2, ul, li, p {
+/* Reset default browser styles */
+body, h1, h2, h3, p, ul, li {
     margin: 0;
     padding: 0;
 }
 
-/* Apply a background color and set text color */
+/* Set a background color and font for the entire page */
 body {
-    background-color: #f2f2f2;
     font-family: Arial, sans-serif;
-    color: #333;
+    background-color: #f0f0f0;
 }
 
-/* Style the header */
-header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-}
-
-/* Style the navigation menu */
-nav ul {
-    list-style-type: none;
-    text-align: center;
-    padding: 20px;
-}
-
-nav li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav a {
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-    font-size: 18px;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: #0056b3;
-}
-
-/* Style the footer */
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-}
-
-/* Center the entire page */
+/* Style the container for your content */
 .container {
-    max-width: 800px;
-    margin: 0 auto;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style headings */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Style form labels */
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+/* Style text input fields */
+input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+/* Style the submit button */
+input[type="submit"] {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+/* Change button color on hover */
+input[type="submit"]:hover {
+    background-color: #0056b3;
 }
