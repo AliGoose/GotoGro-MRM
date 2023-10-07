@@ -26,12 +26,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Assuming transactionID is an auto-increment column, you don't need to specify it
-        $queryCommitstoretransactions = "INSERT INTO mysql_schema.storetransactions VALUES (DEFAULT, ?, ?, ?, DEFAULT)";
+        $queryCommitstoretransactions = "INSERT INTO mysql_schema.storetransactions (username, stockIDs_serialized, txnSum) VALUES (?, ?, ?)";
         $stmt = $socket->prepare($queryCommitstoretransactions);
 
-        // Bind the username, products
-        $stmt->bind_param("ssd", $username, $username, $totalQuantity);
+        // Serialize an array of products for the 'stockIDs_serialized' column
+        $serializedProducts = serialize($_POST["product"]);
 
+        // Bind the username, serialized products, and total quantity as a float(10,2)
+        $stmt->bind_param("ssd", $username, $serializedProducts, $totalQuantity);
 
         $queryAttempt = $stmt->execute();
 
@@ -49,6 +51,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $socket->close();
 }
 ?>
+
+<!-- Rest of your HTML and JavaScript code remains the same -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -78,6 +83,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <button type="button" onclick="addProduct()">Add Product</button>
         <input type="submit" value="Add">
     </form>
+    <?php
+    include './io/databaseHandle.php';
+
+    // Retrieve and display member details (optional)
+    $querySelectTransaction = "SELECT * FROM mysql_schema.storetransactions";
+    $result = $socket->query($querySelectTransaction);
+
+    if ($result) {
+        echo "<h2>Transaction Details:</h2>";
+        echo "<table>";
+        echo "<tr><th>TransactionID</th><th>Username</th><th>Product</th><th>Amount</th></tr>";
+
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>{$row['transactionID']}</td>";
+            echo "<td>{$row['username']}</td>";
+
+            // Unserialize the product data
+            $stockDataSerialized = $row['stockIDs_serialized'];
+            $stockData = unserialize($stockDataSerialized);
+
+            // Assuming $stockData is an array containing stock information
+            // Loop through the array and display the content
+            $productInfo = "";
+            foreach ($stockData as $stock) {
+                $productName = $stock['name'];
+                $quantity = $stock['quantity'];
+                $productInfo .= "$productName: $quantity<br>";
+            }
+
+            echo "<td>$productInfo</td>";
+            echo "<td>{$row['txnSum']}</td>";
+            echo "</tr>";
+        }
+
+        echo "</table>";
+    } else {
+        echo "<p>No Transaction found.</p>";
+    }
+
+    // Close the database connection
+    $socket->close();
+    ?>
+
     <?php include 'footer.php'; ?>
 
     <script>
