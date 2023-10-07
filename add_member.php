@@ -22,11 +22,10 @@ if ($mysqli->connect_error) {
 
 // Process the form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $staffType = $_POST["staffType"];
     $username = $_POST["username"];
     $surname = $_POST["surname"];
     $givenName = $_POST["givenName"];
-    $pwdHash = $_POST["pwdHash"];
+    $pwd = password_hash($_POST["pwd"], PASSWORD_BCRYPT);
     $userEmail = $_POST["userEmail"];
 
     // Check if the username already exists in the database
@@ -42,11 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($existingUsernameCount > 0) {
         echo "Username already exists. Please choose a different username.";
     } else {
-        // Validate staff type (only accept specific staff types)
-        $validStaffTypes = [1, 2]; // Add the valid staff types here
-        if (!in_array($staffType, $validStaffTypes)) {
-            die("Invalid staff type.");
-        }
 
         // Validate email format
         if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
@@ -54,11 +48,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // SQL query to insert member data into the "people" table
-        $insertQuery = "INSERT INTO people (staffType, username, surname, givenName, pwdHash, userEmail) VALUES (?, ?, ?, ?, ?, ?)";
+        $insertQuery = "INSERT INTO people values (DEFAULT, DEFAULT, '$username', '$surname', '$givenName', '$pwd', '$userEmail')";
         $insertStmt = $mysqli->prepare($insertQuery);
-
-        // Bind parameters
-        $insertStmt->bind_param("isssss", $staffType, $username, $surname, $givenName, $pwdHash, $userEmail);
 
         // Execute the query
         if ($insertStmt->execute()) {
@@ -91,17 +82,15 @@ $mysqli->close();
 <?php include 'menu.php'; ?>
     <div class="container">
         <h2>Add New Member</h2>
-        <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
-            <label for="staffType">Staff Type:</label>
-            <input type="text" id="staffType" name="staffType" required>
+        <form action="" method="post">
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="surname">Surname:</label>
             <input type="text" id="surname" name="surname" required>
             <label for="givenName">Given Name:</label>
             <input type="text" id="givenName" name="givenName" required>
-            <label for="pwdHash">Password Hash:</label>
-            <input type="text" id="pwdHash" name="pwdHash" required>
+            <label for="pwd">Password:</label>
+            <input type="text" id="pwd" name="pwd" required>
             <label for="userEmail">User Email:</label>
             <input type="text" id="userEmail" name="userEmail" required>
             <input type="submit" value="Add Member">
