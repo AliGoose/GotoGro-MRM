@@ -4,8 +4,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Retrieve data from form submission
     $username = $_POST["username"];
-    $price = $_POST["price"];
-
 
     // Check if the username exists in the 'people' table
     $queryCheckUsername = "SELECT COUNT(*) FROM mysql_schema.people WHERE username = ?";
@@ -19,16 +17,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($userExists) {
         // Username exists, proceed with the transaction
-        // Serialize the PHP array (stockIDs) to store in the BLOB column
-        $stockIDs = []; // Replace this with your array data
-        $stockIDs_serialized = serialize($stockIDs);
+        // Calculate the total quantity of products
+        $totalQuantity = 0;
+
+        foreach ($_POST["product"] as $key => $product) {
+            $quantity = $product["quantity"];
+            $totalQuantity += $quantity;
+        }
 
         // Assuming transactionID is an auto-increment column, you don't need to specify it
-        $queryCommitstoretransactions = "INSERT INTO mysql_schema.storetransactions VALUES (DEFAULT, ?, ?, '$price', DEFAULT)";
+        $queryCommitstoretransactions = "INSERT INTO mysql_schema.storetransactions VALUES (DEFAULT, ?, ?, ?, DEFAULT)";
         $stmt = $socket->prepare($queryCommitstoretransactions);
 
-        // Bind the username and serialized data
-        $stmt->bind_param("ss", $username, $stockIDs_serialized);
+        // Bind the username, products
+        $stmt->bind_param("ssd", $username, $username, $totalQuantity);
+
 
         $queryAttempt = $stmt->execute();
 
@@ -59,14 +62,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <?php include 'header.php'; ?>
     <?php include 'menu.php'; ?>
     <h1>Add Sales Record</h1>
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="" method="POST">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required>
-        <br>
-        <label for="price">Price per Unit:</label>
-        <input type="number" name="price" id="price" required>
-        <input type="submit" value="Store Transaction">
+
+        <!-- Product input fields (can be dynamically added) -->
+        <div id="products">
+            <div class="product">
+                <label for="product[0][name]">Product Name:</label>
+                <input type="text" name="product[0][name]" required>
+                <label for="product[0][quantity]">Quantity:</label>
+                <input type="number" name="product[0][quantity]" required>
+            </div>
+        </div>
+        <button type="button" onclick="addProduct()">Add Product</button>
+        <input type="submit" value="Add">
     </form>
     <?php include 'footer.php'; ?>
+
+    <script>
+        // Function to add a new product input field
+        function addProduct() {
+            const productsDiv = document.getElementById('products');
+            const productCount = productsDiv.querySelectorAll('.product').length;
+            
+            const newProductDiv = document.createElement('div');
+            newProductDiv.className = 'product';
+            newProductDiv.innerHTML = `
+                <label for="product[${productCount}][name]">Product Name:</label>
+                <input type="text" name="product[${productCount}][name]" required>
+                <label for="product[${productCount}][quantity]">Quantity:</label>
+                <input type="number" name="product[${productCount}][quantity]" required>
+            `;
+            
+            productsDiv.appendChild(newProductDiv);
+        }
+    </script>
 </body>
 </html>
