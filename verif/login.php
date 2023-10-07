@@ -32,6 +32,8 @@
           if(password_verify($enteredPassword, $result)){
             $_SESSION["user"]= $username;
             echo "<p>Successfully logged in as $username.</p>";
+          } else {
+            echo "<p>Wrong password.</p>";
           }
         } else {
           echo "<p>User does not exist.</p>";
