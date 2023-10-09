@@ -49,6 +49,36 @@
         <br>
         <input type="submit" value="Add Sale Record">
     </form>
+    <?php
+    include './io/databaseHandle.php';
+
+    // Retrieve and display inventory details
+    $querySelectInventory = "SELECT * FROM mysql_schema.inventory";
+    $result = $socket->query($querySelectInventory);
+
+    if ($result) {
+        echo "<h2>Inventory Details:</h2>";
+        echo "<table>";
+        echo "<tr><th>Stock ID</th><th>Product Name</th><th>Quantity</th><th>Price per Unit</th><th>Picture</th></tr>";
+
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>{$row['stockID']}</td>";
+            echo "<td>{$row['productName']}</td>";
+            echo "<td>{$row['currentAmt']}</td>";
+            echo "<td>{$row['unitPrice']}</td>";
+            echo "<td><img src='{$row['productImage']}' alt='Product Picture' width='100'></td>";
+            echo "</tr>";
+        }
+
+        echo "</table>";
+    } else {
+        echo "<p>No inventory items found.</p>";
+    }
+
+    // Close the database connection
+    $socket->close();
+    ?>
 	<?php include 'footer.php'; ?>
 </body>
 </html>
