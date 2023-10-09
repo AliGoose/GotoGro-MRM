@@ -4,6 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Retrieve data from form submission
     $username = $_POST["username"];
+    $products = $_POST["product"];
 
     // Check if the username exists in the 'people' table
     $queryCheckUsername = "SELECT COUNT(*) FROM mysql_schema.people WHERE username = ?";
@@ -17,12 +18,60 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if ($userExists) {
         // Username exists, proceed with the transaction
-        // Calculate the total quantity of products
+        // Initialize arrays to store product names with different errors
+        $invalidProducts = [];
+        $quantityExceededProducts = [];
+
+        // Calculate the total quantity of products and validate product names and quantities
         $totalQuantity = 0;
 
-        foreach ($_POST["product"] as $key => $product) {
+        foreach ($products as $key => $product) {
+            $productName = $product["name"];
             $quantity = $product["quantity"];
-            $totalQuantity += $quantity;
+            
+            // Check if the product exists in the inventory
+            $queryCheckProduct = "SELECT currentAmt FROM mysql_schema.inventory WHERE productName = ?";
+            $stmtCheckProduct = $socket->prepare($queryCheckProduct);
+            $stmtCheckProduct->bind_param("s", $productName);
+            $stmtCheckProduct->execute();
+            $stmtCheckProduct->bind_result($currentAmt);
+            
+            if ($stmtCheckProduct->fetch()) {
+                // Check if the sale quantity is valid (not more than currentAmt)
+                if ($quantity <= $currentAmt) {
+                    // Product exists in inventory, update the quantity and currentAmt
+                    $totalQuantity += $quantity;
+                    
+                    // Close the statement for fetching the result before executing the UPDATE query
+                    $stmtCheckProduct->close();
+                    
+                    // Update the currentAmt in inventory
+                    $newCurrentAmt = $currentAmt - $quantity;
+                    $queryUpdateInventory = "UPDATE mysql_schema.inventory SET currentAmt = ? WHERE productName = ?";
+                    $stmtUpdateInventory = $socket->prepare($queryUpdateInventory);
+                    $stmtUpdateInventory->bind_param("ds", $newCurrentAmt, $productName);
+                    $stmtUpdateInventory->execute();
+                    $stmtUpdateInventory->close();
+                } else {
+                    // Sale quantity exceeds currentAmt, add it to the list of quantity exceeded products
+                    $quantityExceededProducts[] = $productName;
+                    // Close the statement for fetching the result
+                    $stmtCheckProduct->close();
+                }
+            } else {
+                // Product does not exist in inventory, add it to the list of invalid products
+                $invalidProducts[] = $productName;
+                // Close the statement for fetching the result
+                $stmtCheckProduct->close();
+            }
+        }
+
+        // Display error messages for invalid products and quantity exceeded products
+        if (!empty($invalidProducts)) {
+            echo '<div style="color: red;">The following products are invalid and do not exist in inventory: ' . implode(", ", $invalidProducts) . '</div>';
+        }
+        if (!empty($quantityExceededProducts)) {
+            echo '<div style="color: red;">The following products have quantities that exceed current inventory: ' . implode(", ", $quantityExceededProducts) . '</div>';
         }
 
         // Assuming transactionID is an auto-increment column, you don't need to specify it
@@ -30,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $socket->prepare($queryCommitstoretransactions);
 
         // Serialize an array of products for the 'stockIDs_serialized' column
-        $serializedProducts = serialize($_POST["product"]);
+        $serializedProducts = serialize($products);
 
         // Bind the username, serialized products, and total quantity as a float(10,2)
         $stmt->bind_param("ssd", $username, $serializedProducts, $totalQuantity);
@@ -93,7 +142,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result) {
         echo "<h2>Transaction Details:</h2>";
         echo "<table>";
-        echo "<tr><th>TransactionID</th><th>Username</th><th>Product</th><th>Amount</th></tr>";
+        echo "<tr><th>TransactionID</th><th>Username</th><th>Product</th><th>Total Amount</th></tr>";
 
         while ($row = $result->fetch_assoc()) {
             echo "<tr>";
