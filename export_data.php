@@ -12,60 +12,48 @@
     include 'menu.php';
     include './io/databaseHandle.php'; // Include the database handle
     ?>
-    <?php
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Check which tables were selected
-        $selectedTables = [];
-        if(isset($_POST['people'])) $selectedTables[] = 'people';
-        if(isset($_POST['inventory'])) $selectedTables[] = 'inventory';
-        if(isset($_POST['storetransactions'])) $selectedTables[] = 'storetransactions';
+<?php
+include './io/databaseHandle.php';
 
-        //creating csv files
-        foreach ($selectedTables as $tableName) {
-            $query = "SELECT * FROM mysql_schema.$tableName";
-            $result = $socket->execute_query($query, null);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $selectedTables = [];
+    if(isset($_POST['people'])) $selectedTables[] = 'people';
+    if(isset($_POST['inventory'])) $selectedTables[] = 'inventory';
+    if(isset($_POST['storetransactions'])) $selectedTables[] = 'storetransactions';
 
-            
-            $output = fopen("exported_$tableName.csv", 'w');
+    foreach ($selectedTables as $tableName) {
+        $query = "SELECT * FROM mysql_schema.$tableName";
+        $result = $socket->execute_query($query, null);
 
-            //adding the tables to csv with columns
-            fputcsv($output, array('Column1', 'Column2', 'Column3')); // Adjust column names
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="exported_'.$tableName.'.csv"');
 
-            //adding the tables to csv with rows
-            while ($row = mysqli_fetch_assoc($result)) {
-                fputcsv($output, $row);
-            }
-            fclose($output);
+        $output = fopen('php://output', 'w');
+        
+        switch($tableName) {
+            case 'people':
+                fputcsv($output, array('UUID', 'staffType', 'username', 'surname', 'givenName', 'pwdHash', 'userEmail'));
+                break;
+            case 'inventory':
+                fputcsv($output, array('stockID', 'productName', 'currentAmt', 'unitPrice'));
+                break;
+            case 'storetransactions':
+                fputcsv($output, array('transactionID', 'username', 'stockIDs_serialized', 'txnSum', 'timestamp'));
+                break;
         }
 
-        // Offer files for download
-        $zip = new ZipArchive();
-        $zipFileName = 'exported_data.zip';
-        if ($zip->open($zipFileName, ZipArchive::CREATE) === TRUE) {
-            foreach ($selectedTables as $tableName) {
-                $csvFileName = "exported_$tableName.csv";
-                $zip->addFile($csvFileName, $csvFileName);
-            }
-            $zip->close();
+        while ($row = mysqli_fetch_assoc($result)) {
+            fputcsv($output, $row);
         }
 
-        // Clean up temporary CSV files
-        foreach ($selectedTables as $tableName) {
-            unlink("exported_$tableName.csv");
-        }
-
-        // Offer the ZIP file for download
-        header('Content-Type: application/zip');
-        header('Content-Disposition: attachment; filename="exported_data.zip"');
-        readfile($zipFileName);
-
-        // Clean up temporary ZIP file
-        unlink($zipFileName);
-
-        $socket->close();
-        exit;
+        fclose($output);
     }
-    ?>
+
+    $socket->close();
+    exit;
+}
+?>
+
 
     <h1>Export Data</h1>
 
