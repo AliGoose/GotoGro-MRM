@@ -18,6 +18,7 @@ if (!$connectionState) {
 }
 
 
+
 // Initialize variables
 $username = "";
 $editedSalesData = [];
