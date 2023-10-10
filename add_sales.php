@@ -21,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Initialize arrays to store product names with different errors
         $invalidProducts = [];
         $quantityExceededProducts = [];
+        $totalPrice = 0;
 
         // Calculate the total quantity of products and validate product names and quantities
-        $totalQuantity = 0;
         $validTransaction = true; // Flag to track if the transaction is valid
 
         foreach ($products as $key => $product) {
@@ -31,17 +31,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $quantity = $product["quantity"];
             
             // Check if the product exists in the inventory
-            $queryCheckProduct = "SELECT currentAmt FROM mysql_schema.inventory WHERE productName = ?";
+            $queryCheckProduct = "SELECT currentAmt, unitPrice FROM mysql_schema.inventory WHERE productName = ?";
             $stmtCheckProduct = $socket->prepare($queryCheckProduct);
             $stmtCheckProduct->bind_param("s", $productName);
             $stmtCheckProduct->execute();
-            $stmtCheckProduct->bind_result($currentAmt);
+            $stmtCheckProduct->bind_result($currentAmt, $unitPrice);
             
             if ($stmtCheckProduct->fetch()) {
                 // Check if the sale quantity is valid (not more than currentAmt)
                 if ($quantity <= $currentAmt) {
                     // Product exists in inventory, update the quantity and currentAmt
-                    $totalQuantity += $quantity;
+                    $totalPrice += $quantity * $unitPrice; // Calculate the total price
                     
                     // Close the statement for fetching the result before executing the UPDATE query
                     $stmtCheckProduct->close();
@@ -71,15 +71,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Check if the transaction is valid before inserting it into the database
         if ($validTransaction) {
-            // Assuming transactionID is an auto-increment column, you don't need to specify it
+            // Calculate the total price based on the products
             $queryCommitstoretransactions = "INSERT INTO mysql_schema.storetransactions (username, stockIDs_serialized, txnSum) VALUES (?, ?, ?)";
             $stmt = $socket->prepare($queryCommitstoretransactions);
 
             // Serialize an array of products for the 'stockIDs_serialized' column
             $serializedProducts = serialize($products);
 
-            // Bind the username, serialized products, and total quantity as a float(10,2)
-            $stmt->bind_param("ssd", $username, $serializedProducts, $totalQuantity);
+            // Bind the username, serialized products, and total price as a float(10,2)
+            $stmt->bind_param("ssd", $username, $serializedProducts, $totalPrice);
 
             $queryAttempt = $stmt->execute();
 
@@ -106,9 +106,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $socket->close();
 }
 ?>
-
-<!-- Rest of your HTML and JavaScript code remains the same -->
-
 
 <!DOCTYPE html>
 <html lang="en">
