@@ -1,101 +1,95 @@
-<?php
-// SSL/TLS configuration
-$mysqli = new mysqli();
-mysqli_ssl_set($mysqli, NULL, NULL, "cert.pem", NULL, NULL);
-
-// Database configuration
-$host = "gotogro-mrm-db.mysql.database.azure.com";
-$username = "mydemouser";
-$password = "Vsp3dbwH";
-$database = "mysql_schema";
-$port = 3306;
-
-// Create a database connection with SSL/TLS
-if (!$mysqli->real_connect($host, $username, $password, $database, $port, NULL, MYSQLI_CLIENT_SSL)) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
-// Check the connection
-if ($mysqli->connect_error) {
-    die("Connection failed: " . $mysqli->connect_error);
-}
-
-// Process the form submission
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"];
-    $surname = $_POST["surname"];
-    $givenName = $_POST["givenName"];
-    $pwd = password_hash($_POST["pwd"], PASSWORD_BCRYPT);
-    $userEmail = $_POST["userEmail"];
-
-    // Check if the username already exists in the database
-    $checkQuery = "SELECT COUNT(*) as count FROM people WHERE username = ?";
-    $checkStmt = $mysqli->prepare($checkQuery);
-    $checkStmt->bind_param("s", $username);
-    $checkStmt->execute();
-    $checkResult = $checkStmt->get_result();
-    $row = $checkResult->fetch_assoc();
-    $existingUsernameCount = $row["count"];
-    $checkStmt->close();
-
-    if ($existingUsernameCount > 0) {
-        echo "Username already exists. Please choose a different username.";
-    } else {
-
-        // Validate email format
-        if (!filter_var($userEmail, FILTER_VALIDATE_EMAIL)) {
-            die("Invalid email format.");
-        }
-
-        // SQL query to insert member data into the "people" table
-        $insertQuery = "INSERT INTO people values (DEFAULT, DEFAULT, '$username', '$surname', '$givenName', '$pwd', '$userEmail')";
-        $insertStmt = $mysqli->prepare($insertQuery);
-
-        // Execute the query
-        if ($insertStmt->execute()) {
-            // Insertion successful
-            echo "Member added successfully!";
-        } else {
-            // Insertion failed
-            echo "Error: " . $mysqli->error;
-        }
-
-        // Close the statement
-        $insertStmt->close();
-    }
-}
-
-// Close the database connection
-$mysqli->close();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Member</title>
-    <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to external CSS file -->
-</head>
+    <title>Add Member</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-<?php include 'header.php'; ?>
-<?php include 'menu.php'; ?>
-    <div class="container">
-        <h2>Add New Member</h2>
-        <form action="" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <label for="surname">Surname:</label>
-            <input type="text" id="surname" name="surname" required>
-            <label for="givenName">Given Name:</label>
-            <input type="text" id="givenName" name="givenName" required>
-            <label for="pwd">Password:</label>
-            <input type="text" id="pwd" name="pwd" required>
-            <label for="userEmail">User Email:</label>
-            <input type="text" id="userEmail" name="userEmail" required>
-            <input type="submit" value="Add Member">
-        </form>
-    </div>
+    <?php
+    include 'header.php';
+    include 'menu.php';
+    include './io/databaseHandle.php';
+
+    ////INCLUDE THIS NEXT LINE TO LOCK A PAGE////
+    include './verif/content-restrict.php';
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $staffType = $_POST["staffType"];
+        $username = $_POST["username"];
+        $surname = $_POST["surname"];
+        $givenName = $_POST["givenName"];
+        $pwd = password_hash($_POST["pwd"], PASSWORD_BCRYPT);
+        $userEmail = $_POST["userEmail"];
+
+        // Use the database handle to insert member details
+        $query = "INSERT INTO mysql_schema.people (staffType, username, surname, givenName, pwdHash, userEmail) 
+                  VALUES ('$staffType', '$username', '$surname', '$givenName', '$pwd', '$userEmail')";
+        $queryAttempt = $socket->execute_query($query, null);
+
+        if (!$queryAttempt) {
+            echo '<script>console.log("<debug> User addition failed"); </script>';
+        } else {
+            echo '<script>console.log("<debug> User added successfully"); </script>';
+        }
+    }
+    ?>
+
+    <h1>Add Member</h1>
+
+    <form action="" method="POST">
+        <label for="staffType">Staff Type:</label>
+        <input type="text" name="staffType" id="staffType" required><br>
+
+        <label for="username">Username:</label>
+        <input type="text" name="username" id="username" required><br>
+
+        <label for="surname">Surname:</label>
+        <input type="text" name="surname" id="surname" required><br>
+
+        <label for="givenName">Given Name:</label>
+        <input type="text" name="givenName" id="givenName" required><br>
+
+        <label for="pwd">Password:</label>
+        <input type="password" name="pwd" id="pwd" required><br>
+
+        <label for="userEmail">User Email:</label>
+        <input type="email" name="userEmail" id="userEmail" required><br>
+
+        <input type="submit" value="Add Member">
+        <br>
+    </form>
+
+    <?php
+    $querySelectMembers = "SELECT * FROM mysql_schema.people";
+    $result = $socket->execute_query($querySelectMembers, null);
+    
+    if ($result) {
+        echo "<h2>Member Details:</h2>";
+        echo "<table>";
+        echo "<tr><th>UUID</th><th>Staff Type</th><th>Username</th></th><th>Given Name</th><th>Surname</th><th>User Email</th></tr>";
+    
+        foreach ($result as $row) {
+            echo "<tr>";
+            echo "<td>{$row['UUID']}</td>";
+            echo "<td>{$row['staffType']}</td>";
+            echo "<td>{$row['username']}</td>";
+            echo "<td>{$row['givenName']}</td>";
+            echo "<td>{$row['surname']}</td>";
+            echo "<td>{$row['userEmail']}</td>";
+            echo "</tr>";
+        }
+
+        echo "</table>";
+    } else {
+        echo "<p>No members found.</p>";
+    }
+
+    // Close the database connection
+    $socket->close();
+    ?>
+
     <?php include 'footer.php'; ?>
 </body>
 </html>

@@ -10,7 +10,7 @@
     <?php
     include 'header.php';
     include 'menu.php';
-    include './io/databaseHandle.php'; // Include the database handle
+    include './io/databaseHandle.php';
 
     ////INCLUDE THIS NEXT LINE TO LOCK A PAGE////
     include './verif/content-restrict.php';
@@ -20,10 +20,10 @@
 
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // Retrieve data from the form
+        //recieving data from form
         $username = $_POST["username"];
 
-        // Use the database handle
+        //handle
         $query = "DELETE FROM mysql_schema.people WHERE username = '$username'";
         $queryAttempt = $socket->execute_query($query, null);
 
@@ -44,7 +44,7 @@
     </form>
 
     <?php
-    // Retrieve and display member details (optional)
+    //displaying table with member details
     $querySelectMembers = "SELECT * FROM mysql_schema.people";
     $result = $socket->execute_query($querySelectMembers, null);
     
