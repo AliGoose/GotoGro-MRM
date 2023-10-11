@@ -1,4 +1,7 @@
 <?php
+////INCLUDE THIS NEXT LINE TO LOCK A PAGE////
+include './verif/content-restrict.php';
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     include './io/databaseHandle.php';
 
