@@ -10,13 +10,12 @@
     <?php
     include 'header.php';
     include 'menu.php';
-    include './io/databaseHandle.php'; // Include the database handle
+    include './io/databaseHandle.php';
     ?>
 <?php
-include './io/databaseHandle.php';
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selectedTables = [];
+    //choosing tables
     if(isset($_POST['people'])) $selectedTables[] = 'people';
     if(isset($_POST['inventory'])) $selectedTables[] = 'inventory';
     if(isset($_POST['storetransactions'])) $selectedTables[] = 'storetransactions';
@@ -29,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header('Content-Disposition: attachment; filename="exported_'.$tableName.'.csv"');
 
         $output = fopen('php://output', 'w');
-        
+        //column names for each field in csv
         switch($tableName) {
             case 'people':
                 fputcsv($output, array('UUID', 'staffType', 'username', 'surname', 'givenName', 'pwdHash', 'userEmail'));
@@ -45,22 +44,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         while ($row = mysqli_fetch_assoc($result)) {
             fputcsv($output, $row);
         }
-
         fclose($output);
     }
-
+    //closing the exportation from including more data
     $socket->close();
     exit;
 }
 ?>
-
-
     <h1>Export Data</h1>
-
     <form action="" method="post">
-        <label><input type="checkbox" name="people"> Export People Data</label><br>
-        <label><input type="checkbox" name="inventory"> Export Inventory Data</label><br>
-        <label><input type="checkbox" name="storetransactions"> Export Store Transactions Data</label><br><br>
+        <label><input type="checkbox" name="people">Click here to Export People Data</label><br>
+        <label><input type="checkbox" name="inventory">Click here to Export Inventory Data</label><br>
+        <label><input type="checkbox" name="storetransactions">Click here to Export Store Transactions Data</label><br><br>
         <input type="submit" value="Export Selected Data">
     </form>
 </body>
