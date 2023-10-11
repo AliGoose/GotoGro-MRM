@@ -11,6 +11,9 @@
     include 'header.php';
     include 'menu.php';
     include './io/databaseHandle.php'; // Include the database handle
+
+    ////INCLUDE THIS NEXT LINE TO LOCK A PAGE////
+    include './verif/content-restrict.php';
     ?>
 
     <h1>Remove Member</h1>

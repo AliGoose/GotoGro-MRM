@@ -8,9 +8,10 @@
 </head>
 <body>
     <?php
+    session_start();
     include 'header.php';
     include 'menu.php';
-    include './io/databaseHandle.php'; // Include the database handle
+    include './io/databaseHandle.php';
     ?>
 
     <h1>Staff Log-in</h1>
@@ -27,14 +28,24 @@
         if ($queryAttempt) {
           $passwordCmp = password_hash($enteredPassword, PASSWORD_BCRYPT);
 
-          $result = mysqli_fetch_row($queryAttempt)[5];
+          $result = mysqli_fetch_row($queryAttempt);
           
-          if(password_verify($enteredPassword, $result)){
+          if(password_verify($enteredPassword, $result[5])){
             $_SESSION["user"]= $username;
-            echo "<p>Successfully logged in as $username.</p>";
+            $_SESSION["usrtype"]= $result[1];
+            $_SESSION["message"] = "Successfully logged in as $username";
+            
+            $redirect = "../remove_member.php";
+
+
           } else {
-            echo "<p>Wrong password.</p>";
+            $_SESSION["message"] = "Wrong password.";
+
+            $redirect = "../login.php";
+
           }
+          require './io/redirect.php';
+
         } else {
           echo "<p>User does not exist.</p>";
         }
