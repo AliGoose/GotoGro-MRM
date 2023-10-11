@@ -7,11 +7,11 @@
     <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-    <?php
-    include 'header.php';
-    include 'menu.php';
-    include './io/databaseHandle.php';
-    ?>
+<?php
+include 'header.php';
+include 'menu.php';
+include './io/databaseHandle.php';
+?>
 <?php
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selectedTables = [];
@@ -20,42 +20,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['inventory'])) $selectedTables[] = 'inventory';
     if(isset($_POST['storetransactions'])) $selectedTables[] = 'storetransactions';
 
+
+    //csv constants, field descriptors in DB
+    $exportDefs= array(
+        array('UUID', 'staffType', 'username', 'surname', 'givenName', 'pwdHash', 'userEmail'),     //USER DATA
+        array('stockID', 'productName', 'currentAmt', 'unitPrice'),                                 //STOCK DATA
+        array('transactionID', 'username', 'stockIDs_serialized', 'txnSum', 'timestamp', 'desc')    //TXN DATA
+    );
+
+    ///HEADER DATA///
+    $serverTime= $_SERVER['REQUEST_TIME'];
+    header('Content-Type: application/csv');
+    header('Content-Disposition: attachment; filename="exports-'.$serverTime.'.csv"');
+
+
+    ///OPEN WRITEFILE HANDLE, DIRECTED TO OUTPUT BUFFER///
+    $buffer = fopen('php://output', 'w');
+    $buffer.ob_clean();
+    
+    //iterate through selected tables
     foreach ($selectedTables as $tableName) {
+
+
+        ///QUERY OVERHEAD///
         $query = "SELECT * FROM mysql_schema.$tableName";
         $result = $socket->execute_query($query, null);
 
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="exported_'.$tableName.'.csv"');
-
-        $output = fopen('php://output', 'w');
-        //column names for each field in csv
+        //column naming for each csv
         switch($tableName) {
             case 'people':
-                fputcsv($output, array('UUID', 'staffType', 'username', 'surname', 'givenName', 'pwdHash', 'userEmail'));
+                fputcsv($buffer, $exportDefs[0]);
                 break;
             case 'inventory':
-                fputcsv($output, array('stockID', 'productName', 'currentAmt', 'unitPrice'));
+                fputcsv($buffer, $exportDefs[1]);
                 break;
             case 'storetransactions':
-                fputcsv($output, array('transactionID', 'username', 'stockIDs_serialized', 'txnSum', 'timestamp'));
+                fputcsv($buffer, $exportDefs[2]);
                 break;
+            }
+            
+            while ($row = mysqli_fetch_assoc($result)) {
+                fputcsv($buffer, $row);
+            }
         }
+        
 
-        while ($row = mysqli_fetch_assoc($result)) {
-            fputcsv($output, $row);
-        }
-        fclose($output);
-    }
-    //closing the exportation from including more data
+    //close the output buffer
+    fclose($buffer);
+
+    //closing connection socket
     $socket->close();
     exit;
 }
 ?>
     <h1>Export Data</h1>
     <form action="" method="post">
-        <label><input type="checkbox" name="people">Click here to Export People Data</label><br>
-        <label><input type="checkbox" name="inventory">Click here to Export Inventory Data</label><br>
-        <label><input type="checkbox" name="storetransactions">Click here to Export Store Transactions Data</label><br><br>
+        <label><input type="checkbox" name="people">Export People Data</label><br>
+        <label><input type="checkbox" name="inventory">Export Inventory Data</label><br>
+        <label><input type="checkbox" name="storetransactions">Export Transaction Data</label><br><br>
         <input type="submit" value="Export Selected Data">
     </form>
 </body>
