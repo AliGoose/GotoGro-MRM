@@ -56,5 +56,5 @@ jobs:
         with:
           app-name: 'GotoGro-MRM'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FF907C93C12948A19CF5DFF4937A0A9B }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0A520F968E574BA592D6EAB66E8A225C }}
           package: .
