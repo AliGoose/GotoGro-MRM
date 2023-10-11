@@ -134,8 +134,14 @@ $mysqli->close();
     <link rel="stylesheet" type="text/css" href="styles.css"> <!-- Link to external CSS file -->
 </head>
 <body>
-<?php include 'header.php'; ?>
-<?php include 'menu.php'; ?>
+<?php 
+include 'header.php'; 
+include 'menu.php'; 
+ include './io/databaseHandle.php'; // Include the database handle
+
+    ////INCLUDE THIS NEXT LINE TO LOCK A PAGE////
+    include './verif/content-restrict.php';
+    ?>
     <div class="container">
         <h2>Edit Member Details</h2>
         <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post">
