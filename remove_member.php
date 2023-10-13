@@ -12,7 +12,7 @@
     include './io/databaseHandle.php';
 
     ////INCLUDE THIS NEXT LINE TO LOCK A PAGE////
-    include './verif/content-restrict.php';
+    //include './verif/content-restrict.php';
     ?>
 
     <h1>Remove Member</h1>
