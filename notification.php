@@ -8,7 +8,7 @@
 </head>
 <body>
     <?php include 'header.php'; ?>
-    <?php include 'menu.php'; ?>
+    
     <?php
     include 'io/databaseHandle.php'; // Include your database connection script
 
