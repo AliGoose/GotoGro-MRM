@@ -80,7 +80,7 @@ function displayInventory() {
 </head>
 <body>
     <?php include 'header.php'; ?>
-    <?php include 'menu.php'; ?>
+
 
 <button onclick="displayWeek()">Display Weekly Transactions</button>
 <button onclick="displayMonth()">Display Monthly Transactions</button>

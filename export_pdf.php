@@ -11,7 +11,7 @@
     <?php
     include 'header.php';
     include './io/databaseHandle.php';
-
+    include 'tcpdf.php';
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $transactionID = $_POST["transactionID"];
 
@@ -28,7 +28,7 @@
             ob_start();
 
             require_once("C:\Users\siva0\OneDrive\Desktop\swe\cpdf\cpdf.php");
-
+            require_once('tcpdf.php');
             $pdf = new TCPDF();
             $pdf->SetMargins(10, 10, 10);
             $pdf->AddPage();
