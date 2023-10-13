@@ -72,6 +72,7 @@ form input[type="submit"]:hover {
     margin: 0 6px; /* Adjusted margin */
 }
 
+
 .ribbon a {
     color: #fff;
     text-decoration: none;
@@ -127,3 +128,18 @@ th {
     background-color: #8b4513;
     color: #fff;
 }
+button {
+    background-color: #8b4513;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 2px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #5a2b0f !important;
+}
+
