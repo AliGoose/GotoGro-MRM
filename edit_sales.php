@@ -17,8 +17,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
       //assuming a MYSQLI_RESULT is fetched, get only the first result of the array
       //as U is enforced on the end of the database theres no need for advanced array seeking
+        
+        // query item database for unit price
+        //get unit amount and sum total
+        foreach ($products as $prodName=> $purchaseAmount) {
+            echo '<script>console.log("<debug>'.$products.'"); </script>';
+            
+        }
+        //commit with sum total 
 
-      // $validTxn= mysqli_fetch_row($txnCheck);
       $updatedProductTxn= serialize($products); 
 
       $query= "UPDATE mysql_schema.storetransactions SET stockIDs_serialized= '$updatedProductTxn' WHERE transactionID= '$txnID'";
