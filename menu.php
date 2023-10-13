@@ -7,5 +7,9 @@
         <li><a href="edit_sales.php">Edit Sales</a></li>
         <li><a href="export_data.php">Export to CSV</a></li>
         <li><a href="inventory.php">Inventory</a></li>
+        <li><a href="optimisation.php">Optimisation</a></li>
+        <li><a href="notification.php">Notification</a></li>
+        <li><a href="export_pdf.php">Receipt as PDF</a></li>
+        
     </ul>
 </nav>
