@@ -120,7 +120,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <?php include 'header.php'; ?>
-    <?php include 'menu.php'; ?>
     <h1>Add Sales Record</h1>
     <form action="" method="POST">
         <label for="username">Username:</label>

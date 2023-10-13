@@ -35,7 +35,7 @@ include './verif/content-restrict.php';
 </head>
 <body>
 	<?php include 'header.php'; ?>
-    <?php include 'menu.php'; ?>
+
     <h1>Inventory</h1>
     <form action="" method="POST">
         <label for="product_name">Product Name:</label>

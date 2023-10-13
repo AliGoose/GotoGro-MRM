@@ -1,59 +1,88 @@
 body {
-    font-family: Arial, sans-serif; 
+    background-color: #d2b48c;
+    font-family: Arial, sans-serif;
 }
 
-
-form {
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+.ribbon {
+    background-color: #8b4513;
+    padding: 30px;
+    text-align: center;
+    position: relative;
 }
 
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="email"] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-input[type="submit"] {
-    background-color: #4caf50;
+.ribbon h1 {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
     color: #fff;
+    font-size: 24px;
+    margin-right: 20px;
+}
+
+.ribbon ul {
+    list-style: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.ribbon li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+.ribbon a {
+    color: #fff;
+    text-decoration: none;
     padding: 10px 20px;
-    border: none;
     border-radius: 4px;
-    cursor: pointer;
+    border: 2px solid #fff;
+    transition: background-color 0.3s;
+}
+
+.ribbon a:hover {
+    background-color: #fff;
+    color: #8b4513;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    display: inline-block;
+    margin: 0 10px;
+}
+
+a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: 2px solid #fff;
+    transition: background-color 0.3s;
+}
+
+a:hover {
+    background-color: #fff;
+    color: #8b4513;
 }
 
 table {
-    width: 100%;
     border-collapse: collapse;
+    width: 100%;
     margin-bottom: 20px;
 }
 
 th, td {
+    border: 1px solid #8b4513;
     padding: 8px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
 }
 
 th {
-    background-color: #4caf50;
+    background-color: #8b4513;
     color: #fff;
-}
-
-tr:nth-child(even) {
-    background-color: #f2f2f2;
 }
