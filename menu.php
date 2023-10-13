@@ -7,6 +7,6 @@
         <li><a href="edit_sales.php">Edit Sales</a></li>
         <li><a href="export_data.php">Export Sales/Member/Inventory Data</a></li>
         <li><a href="inventory.php">Inventory</a></li>
-        <li><a href="optimisation.php">Order optimisation</a></li>
+
     </ul>
 </nav>
