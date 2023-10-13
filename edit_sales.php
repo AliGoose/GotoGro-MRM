@@ -20,15 +20,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // query item database for unit price
         //get unit amount and sum total
-        foreach ($products as $prodName=> $purchaseAmount) {
-            echo '<script>console.log("<debug>'.$products.'"); </script>';
-            
+        $sumTotal= 0;
+        foreach ($products as $key=> $prodAssoc) {
+            $productName = $prodAssoc["name"];
+            $quantity = $prodAssoc["quantity"];
+
+            $query = "SELECT unitPrice FROM mysql_schema.inventory WHERE productName= '$productName'";
+            $prodData= $socket->execute_query($query, null);
+
+            $result= mysqli_fetch_row($prodData);
+
+            $productTotalCost= $quantity*$result[0];
+            $sumTotal+= $productTotalCost;
         }
         //commit with sum total 
 
       $updatedProductTxn= serialize($products); 
 
-      $query= "UPDATE mysql_schema.storetransactions SET stockIDs_serialized= '$updatedProductTxn' WHERE transactionID= '$txnID'";
+      $query= "UPDATE mysql_schema.storetransactions SET stockIDs_serialized= '$updatedProductTxn', txnSum= '$sumTotal' WHERE transactionID= '$txnID'";
       $queryAttempt = $socket->execute_query($query, null);
       
       if (!$queryAttempt) {
@@ -53,7 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <?php include 'header.php'; ?>
-    <?php include 'menu.php'; ?>
     <h1>Edit Sales Record</h1>
 
 
