@@ -9,7 +9,6 @@
 <body>
 <?php
 include 'header.php';
-include 'menu.php';
 include './io/databaseHandle.php';
 ?>
 <?php

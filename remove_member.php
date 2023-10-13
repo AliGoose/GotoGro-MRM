@@ -9,7 +9,6 @@
 <body>
     <?php
     include 'header.php';
-    include 'menu.php';
     include './io/databaseHandle.php';
 
     ////INCLUDE THIS NEXT LINE TO LOCK A PAGE////
