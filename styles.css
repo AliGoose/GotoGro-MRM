@@ -1,60 +1,59 @@
-/* styles.css */
-
-/* Reset some default browser styles */
-body, h1, h2, ul, li, p {
-    margin: 0;
-    padding: 0;
-}
-
-/* Apply a background color and set text color */
 body {
-    background-color: #f2f2f2;
-    font-family: Arial, sans-serif;
-    color: #333;
+    font-family: Arial, sans-serif; 
 }
 
-/* Style the header */
-header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-}
 
-/* Style the navigation menu */
-nav ul {
-    list-style-type: none;
-    text-align: center;
-    padding: 20px;
-}
-
-nav li {
-    display: inline;
-    margin-right: 20px;
-}
-
-nav a {
-    text-decoration: none;
-    color: #007bff;
-    font-weight: bold;
-    font-size: 18px;
-    transition: color 0.3s;
-}
-
-nav a:hover {
-    color: #0056b3;
-}
-
-/* Style the footer */
-footer {
-    text-align: center;
-    padding: 10px;
-    background-color: #007bff;
-    color: #fff;
-}
-
-/* Center the entire page */
-.container {
-    max-width: 800px;
+form {
+    max-width: 500px;
     margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input[type="submit"] {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
 }
