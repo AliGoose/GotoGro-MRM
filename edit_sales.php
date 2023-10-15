@@ -17,11 +17,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
       //assuming a MYSQLI_RESULT is fetched, get only the first result of the array
       //as U is enforced on the end of the database theres no need for advanced array seeking
+        
+        // query item database for unit price
+        //get unit amount and sum total
+        $sumTotal= 0;
+        foreach ($products as $key=> $prodAssoc) {
+            $productName = $prodAssoc["name"];
+            $quantity = $prodAssoc["quantity"];
 
-      // $validTxn= mysqli_fetch_row($txnCheck);
+            $query = "SELECT unitPrice FROM mysql_schema.inventory WHERE productName= '$productName'";
+            $prodData= $socket->execute_query($query, null);
+
+            $result= mysqli_fetch_row($prodData);
+
+            $productTotalCost= $quantity*$result[0];
+            $sumTotal+= $productTotalCost;
+        }
+        //commit with sum total 
+
       $updatedProductTxn= serialize($products); 
 
-      $query= "UPDATE mysql_schema.storetransactions SET stockIDs_serialized= '$updatedProductTxn' WHERE transactionID= '$txnID'";
+      $query= "UPDATE mysql_schema.storetransactions SET stockIDs_serialized= '$updatedProductTxn', txnSum= '$sumTotal' WHERE transactionID= '$txnID'";
       $queryAttempt = $socket->execute_query($query, null);
       
       if (!$queryAttempt) {
@@ -46,7 +62,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <?php include 'header.php'; ?>
-    <?php include 'menu.php'; ?>
     <h1>Edit Sales Record</h1>
 
 
